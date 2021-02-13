@@ -1,0 +1,12 @@
+name: Demo_App
+title: Demo_App
+username:
+account: sposkus
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3630790
+bundleId: 4216837
+url: https://sposkus.shinyapps.io/Demo_App/
+when: 1613172555.68541
+asMultiple: FALSE
+asStatic: FALSE

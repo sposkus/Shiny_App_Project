@@ -1,0 +1,104 @@
+---
+title: "Fiji Seismic Activity"
+author: "Shannon Poskus"
+date: "February 12, 2021"
+output: ioslides_presentation
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(shiny)
+library(leaflet)
+```
+
+## Introduction 
+
+This presentation is an introduction to my application on the History of seismic events near Fiji.  Using the quakes data set included in R, the shiny app provides multiple ways of visualizing and interacting with the data.  
+
+By having both a plot of the Magnitude versus the Depth of the seismic events, and a map of the event locations that is color-coded by Magnitude, it allows users to explore relationships in the data. The sliders allow you to control the portion of the data set you are viewing in both visualizations.
+
+## Information
+  
+The data used in the application is from the quakes data set, one of the Harvard PRIM-H project data sets, and includes the locations of 1000 seismic events that have occurred in the area surrounding Fiji since 1964.  The primary data fields that are included in the visualizations are:
+
+- Magnitude on the Richter scale
+- Depth in kilometers
+- Latitude and Longitude of Seismic event
+
+## Data Summary
+
+Here's a summary of the relevant quakes data fields to show the extent of the data values.
+
+```{r, echo = TRUE}
+quakesData <- subset(quakes, select = -stations)
+summary(quakesData)
+```
+
+## Application
+
+```{r}
+shinyApp(
+    ui = fluidPage(
+    titlePanel("History of seismic events near Fiji"),
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput("depths", "Choose seismic event depth range:",
+                        min = 25, max = 700, value = c(100, 620)),
+            checkboxInput("meanDep", "Show the Mean Depth", value = TRUE),
+            sliderInput("mags", "Choose the seismic event magnitude range:",
+                        min = 3.5, max = 7, step = 0.1, value = c(4, 6)),
+            checkboxInput("meanMag", "Show the Mean Magnitude", value = TRUE)
+        ),
+        mainPanel(
+            tabsetPanel(type = "tabs",
+                        tabPanel("Data", br(), h4("Magnitude versus Depth of Seismic Events"), plotOutput("dataPlot")),
+                        tabPanel("Map", br(), h4("Map of Seismic Events colored by Magnitude"), leafletOutput("mapPlot"))
+            )
+        )
+    )
+),
+server = function(input, output) {
+    output$dataPlot <- renderPlot({
+        depth_min <- input$depths[1]
+        depth_max <- input$depths[2]
+        mag_min <- input$mags[1]
+        mag_max <- input$mags[2]
+        quakeData <- subset(quakes, (mag >= mag_min & mag <= mag_max & 
+                                         depth >= depth_min & depth <= depth_max))
+        
+        mag_mean <- mean(quakeData$mag)
+        depth_mean <- mean(quakeData$depth)
+
+        plot(quakeData$depth, quakeData$mag, xlim = c(25, 700), ylim = c(3.8, 6.8), 
+             xlab = "Depth (km)", ylab = "Richter Magnitude") 
+        if(input$meanDep){
+            abline(v=depth_mean, col = "blue", lwd = 2)
+        } 
+        if(input$meanMag){
+            abline(h=mag_mean, col = "red", lwd = 2)
+        } 
+        legend("topright", legend = c("Mean Depth", "Mean Magnitude"), pch = 16, 
+               col = c("blue", "red"), bty = "n", cex = 1.2)
+        
+    })
+
+    output$mapPlot <- renderLeaflet({
+        depth_min <- input$depths[1]
+        depth_max <- input$depths[2]
+        mag_min <- input$mags[1]
+        mag_max <- input$mags[2]
+
+        quakeData <- subset(quakes, (mag >= mag_min & mag <= mag_max & 
+                                         depth >= depth_min & depth <= depth_max))
+        
+        colorPal <- colorBin("Reds", quakes$mag, 7)
+        
+        quakeData %>% leaflet() %>% addTiles() %>% 
+            addCircles(lng = ~long, lat = ~lat, color = ~colorPal(mag))
+    })
+},
+options = list(height = 500)
+)
+```
+
