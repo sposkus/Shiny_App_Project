@@ -3129,9 +3129,11 @@ slide:not(.current) .plotly.html-widget{
 
 <p>This presentation is an introduction to my application on the History of seismic events near Fiji. Using the quakes data set included in R, the shiny app provides multiple ways of visualizing and interacting with the data.</p>
 
+<p>By having both a plot of the Magnitude versus the Depth of the seismic events, and a map of the event locations that is color-coded by Magnitude, it allows users to explore relationships in the data. The sliders allow you to control the portion of the data set you are viewing in both visualizations.</p>
+
 </article></slide><slide class=""><hgroup><h2>Information</h2></hgroup><article  id="information">
 
-<p>The primary data used in the visulizations from the quakes data set is:</p>
+<p>The data used in the application is from the quakes data set, one of the Harvard PRIM-H project data sets, and includes the locations of 1000 seismic events that have occurred in the area surrounding Fiji since 1964. The primary data fields that are included in the visualizations are:</p>
 
 <ul>
 <li>Magnitude on the Richter scale</li>
@@ -3139,9 +3141,12 @@ slide:not(.current) .plotly.html-widget{
 <li>Latitude and Longitude of Seismic event</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Data</h2></hgroup><article  id="data">
+</article></slide><slide class=""><hgroup><h2>Data Summary</h2></hgroup><article  id="data-summary">
 
-<p>Here’s a summary of the quakes data set to show the extent of the data values.</p>
+<p>Here’s a summary of the relevant quakes data fields to show the extent of the data values.</p>
+
+<pre class = 'prettyprint lang-r'>quakesData &lt;- subset(quakes, select = -stations)
+summary(quakesData)</pre>
 
 <pre >##       lat              long           depth            mag      
 ##  Min.   :-38.59   Min.   :165.7   Min.   : 40.0   Min.   :4.00  
@@ -3149,20 +3154,13 @@ slide:not(.current) .plotly.html-widget{
 ##  Median :-20.30   Median :181.4   Median :247.0   Median :4.60  
 ##  Mean   :-20.64   Mean   :179.5   Mean   :311.4   Mean   :4.62  
 ##  3rd Qu.:-17.64   3rd Qu.:183.2   3rd Qu.:543.0   3rd Qu.:4.90  
-##  Max.   :-10.72   Max.   :188.1   Max.   :680.0   Max.   :6.40  
-##     stations     
-##  Min.   : 10.00  
-##  1st Qu.: 18.00  
-##  Median : 27.00  
-##  Mean   : 33.42  
-##  3rd Qu.: 42.00  
-##  Max.   :132.00</pre>
+##  Max.   :-10.72   Max.   :188.1   Max.   :680.0   Max.   :6.40</pre>
 
-</article></slide><slide class=""><hgroup><h2>Application</h2></hgroup><article  id="application">
+</article></slide><slide class=""><hgroup><h2>Application: <a href='https://sposkus.shinyapps.io/Demo_App/' title=''>link</a></h2></hgroup><article  id="application-link">
 
-<pre >## PhantomJS not found. You can install it with webshot::install_phantomjs(). If it is installed, please make sure the phantomjs executable can be found via the PATH variable.</pre>
+<iframe src="https://sposkus.shinyapps.io/Demo_App/?showcase=0" width="720" height="400px">
 
-<div style="width: 100% ; height: 500px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div></article></slide>
+</iframe></article></slide>
 
 
   <slide class="backdrop"></slide>
